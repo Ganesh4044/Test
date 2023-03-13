@@ -1,0 +1,18 @@
+---
+# tasks file for diskspace-utilization-remediation
+
+- name: Recursively find and remove unnecessary logs and files to free diskspace
+  find:
+    paths: "{{ paths }}"
+    depth: "{{ depth }}"
+    age: "{{ age }}"
+      #    size: "{{ size }}"
+      #   pattern: "{{ pattern }}"
+    recurse: yes
+  register: removable_files
+
+- name: remove files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ removable_files.files }}"

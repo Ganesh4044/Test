@@ -1,0 +1,5 @@
+# playbook for diskspace-utilization-remediation
+---
+- hosts: all
+  roles:
+    - { role: roles/diskspace-utilization-remediation, become: yes }

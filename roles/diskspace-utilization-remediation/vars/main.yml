@@ -1,0 +1,9 @@
+---
+# vars file for diskspace-utilization-remediation
+
+  paths: "/var/log"
+  depth: "2"
+  age: "10d"
+    # size: "50m"
+    # pattern: "*.log, *.log.gz"
+  recursive: "yes"
