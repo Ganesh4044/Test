@@ -1,0 +1,17 @@
+---
+# tasks file for windows-diskspace-utilization-remediation
+
+- name: Recursively find and remove unnecessary logs and files to free diskspace
+  win_find:
+    paths: "{{ file_paths }}"
+    age: "{{ file_age }}"
+      #    size: "{{ file_size }}"
+      #   pattern: "{{ file_pattern }}"
+    recurse: yes
+  register: removable_files
+
+- name: remove files
+  win_file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ removable_files.files }}"

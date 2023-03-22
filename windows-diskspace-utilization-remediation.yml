@@ -1,0 +1,5 @@
+# playbook for windows-diskspace-utilization-remediation
+---
+- hosts: "{{ nodes }}"
+  roles:
+    - { role: roles/windows-diskspace-utilization-remediation, become: yes }

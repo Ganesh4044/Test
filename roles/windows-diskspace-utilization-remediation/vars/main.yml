@@ -1,0 +1,10 @@
+---
+# vars file for windows-diskspace-utilization-remediation
+
+  file_paths: 
+  - C:\Temp
+  
+  file_age: 10d
+    # file_size: 50m
+    # file_pattern: ['*.log', '*.old']
+  recursive: "yes"
