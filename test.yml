@@ -1,5 +1,0 @@
-# Test.yml for testing test role
----
-- hosts: all
-  roles:
-    - { role: roles/test-role, become: yes }
