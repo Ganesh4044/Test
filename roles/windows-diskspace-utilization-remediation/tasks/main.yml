@@ -4,14 +4,26 @@
 - name: Recursively find and remove unnecessary logs and files to free diskspace
   win_find:
     paths: "{{ file_paths }}"
-    age: "{{ file_age }}"
-      #    size: "{{ file_size }}"
-      #   pattern: "{{ file_pattern }}"
+    #age: "{{ file_age }}"
+    size: "{{ file_size }}"
+    patterns: "{{ file_pattern }}"
     recurse: yes
   register: removable_files
 
+
+- name: list of files to be removed
+  vars:
+    files: "{{ filestoremove.files | json_query('[].path') }}"
+  debug: 
+    var=files
+    
 - name: remove files
+  vars:
+    files: "{{ removable_files.files | json_query('[].path') }}"
   win_file:
-    path: "{{ item.path }}"
+    path: "{{item}}"
+      #patterns: "{{ file_pattern }}"
     state: absent
-  with_items: "{{ removable_files.files }}"
+    recurse: yes
+  with_items: 
+    - "{{ files }}"

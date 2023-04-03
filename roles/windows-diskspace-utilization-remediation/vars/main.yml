@@ -2,9 +2,10 @@
 # vars file for windows-diskspace-utilization-remediation
 
   file_paths: 
-  - C:\Temp
-  
+    - D:\test
+      
   file_age: 10d
-    # file_size: 50m
-    # file_pattern: ['*.log', '*.old']
+  file_size: 50m
+  file_pattern: ['*.txt','*.yml', '*.diff']
+  state: absent
   recursive: "yes"
