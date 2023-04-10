@@ -1,6 +1,5 @@
 # playbook for windows-diskspace-utilization-remediation
 ---
 - hosts: all
-  #become_method: runas
   roles:
-    - { role: roles/windows-diskspace-utilization-remediation }
+    - { role: roles/windows-diskspace-utilization-remediation, become_method: runas }

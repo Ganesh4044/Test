@@ -5,7 +5,7 @@
   win_find:
     paths: "{{ file_paths }}"
     #age: "{{ file_age }}"
-    size: "{{ file_size }}"
+    #size: "{{ file_size }}"
     patterns: "{{ file_pattern }}"
     recurse: yes
   register: removable_files

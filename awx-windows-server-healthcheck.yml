@@ -1,0 +1,5 @@
+---
+# playbook for windows-server-healthcheck
+- hosts: windows
+  roles:
+    - { role: roles/windows-server-healthchech, become_method: runas }

@@ -1,0 +1,43 @@
+---
+# tasks file for windows-server-healthchech
+    - name: Remove old healthcheck file
+      ansible.windows.win_file:
+        path: D:\test\{{ inventory_hostname }}.txt
+        state: absent
+
+    - name: Touch a file (creates if not present, updates modification time if present)
+      ansible.windows.win_file:
+        path: D:\test\{{ inventory_hostname }}.txt
+        state: touch
+
+    - name: Get disk facts
+      win_disk_facts:
+
+    - name: Output first disk size
+      debug:
+        var: ansible_facts.disks[0].size
+
+    - name: Convert first system disk into various formats
+      debug:
+        msg: '{{ disksize_gib }} vs {{ disksize_gib_human }}'
+
+    - name: Insert path without converting \r\n
+      community.windows.win_lineinfile:
+        path: D:\test\{{ inventory_hostname }}.txt
+        line: "{{item}}"
+      with_items:
+        - "Operating System: {{ ansible_distribution }} {{ ansible_distribution_version}}"
+          #- "File System: {{ ansible_mounts[0].fstype }}"
+        - "Host architecture: {{ ansible_architecture }}"
+          #- "ipv4 address: {{ ansible_ip_addresses }}"
+        - "PowerShell Version: {{ ansible_powershell_version }}"
+        - "Available Memory: {{ ansible_memfree_mb }} MB"
+        - "Total memory: {{ ansible_memtotal_mb }} MB"
+        - "System Processor: {{ ansible_processor_cores }}"
+        - "Processor: {{ ansible_processor[2] }}"
+          #- "MAC Address: {{ ansible_default_ipv4.macaddress }}"
+        - "Host FQDN: {{ ansible_fqdn }}"
+        - "Domain Name: {{ ansible_windows_domain }}"
+        - "Date: {{ ansible_date_time.date }}"
+        - "System Uptime in seconds: {{ ansible_uptime_seconds }}"
+        - "Mount point C: {{ disksize_gib_human }}"
