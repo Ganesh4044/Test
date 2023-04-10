@@ -7,5 +7,5 @@
   file_age: 10d
   file_size: 50m
   file_pattern: ['*.txt','*.yml', '*.diff']
-  state: absent
+    #state: absent
   recursive: "yes"
