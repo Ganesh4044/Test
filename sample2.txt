@@ -1,3 +1,0 @@
-this is second sample file ading to the new dev branch
-
-this is edited by ganesh from github in ganesh branch
