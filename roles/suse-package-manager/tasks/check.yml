@@ -1,0 +1,5 @@
+---
+- name: check package installed
+ansible.builtin.debig:
+  msg: " {{ ansible_facts.packages['python3-rpm'] | length }} versions of python3-rpm installed "
+when: "'python3-rpm' in ansible_facts.packages"

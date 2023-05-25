@@ -1,0 +1,6 @@
+---
+- name: uninstall/remove python3-rpm package
+  community.general.zypper:
+    name: python3-rpm
+    type: package
+    state: absent
