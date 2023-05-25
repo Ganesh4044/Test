@@ -1,5 +1,5 @@
 #suse package-manager
 
-- hosts
+- hosts: localhost
   roles:
     - { role: roles /suse-package-manager, become: yes}
