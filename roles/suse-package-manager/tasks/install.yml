@@ -1,6 +1,6 @@
 ---
 - name: install python3-rpm package
-  community.general.zypper:
+  zypper:
     name: python3-rpm
     type: package
     state: present
