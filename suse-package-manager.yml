@@ -1,0 +1,5 @@
+#suse package-manager
+
+- hosts
+  roles:
+    - { role: roles /suse-package-manager become: yes}
