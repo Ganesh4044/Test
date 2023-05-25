@@ -1,4 +1,6 @@
 ---
 # vars file for suse-package-manager
 
+  package: "python3-rpm"
   role_function: "install"
+

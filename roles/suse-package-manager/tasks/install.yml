@@ -1,6 +1,6 @@
 ---
-- name: install python3-rpm package
+- name: install {{ package }} package
   zypper:
-    name: python3-rpm
+    name: "{{ package }}"
     type: package
     state: present

@@ -1,6 +1,6 @@
 ---
-- name: uninstall/remove python3-rpm package
+- name: uninstall/remove {{ package }} package
   zypper:
-    name: python3-rpm
+    name: "{{ package }}"
     type: package
     state: absent

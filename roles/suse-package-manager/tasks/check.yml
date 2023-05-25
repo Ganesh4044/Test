@@ -1,5 +1,8 @@
----
-- name: check package installed
-ansible.builtin.debig:
-  msg: " {{ ansible_facts.packages['python3-rpm'] | length }} versions of python3-rpm installed "
-when: "'python3-rpm' in ansible_facts.packages"
+- name: Check whether a package called {{ package }} is installed
+  shell:
+    cmd: rpm -qa | grep {{ package }}
+  register: available_packages
+
+- name: show installed {{package}}
+  debug:
+    msg: "{{available_packages.stdout}}"

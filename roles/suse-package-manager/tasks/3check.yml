@@ -1,0 +1,15 @@
+- name: Find if custom_rpm is installed
+  yum:
+    list: custom_rpm
+  register: custom_rpm_yum_packages
+  when: ansible_os_family == "openSUSE Leap"
+
+- name: Extract custom_rpm actual installed version
+  set_fact:
+     actual_custom_rpm_version:  "{{custom_rpm_yum_packages | json_query(jsonquery)}}"
+  vars:
+     jsonquery: "results[?yumstate=='installed'].version"
+  when: ansible_os_family == "openSUSE Leap"
+
+- debug:
+    var: actual_custom_rpm_version

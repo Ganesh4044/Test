@@ -1,20 +1,20 @@
 ---
 # tasks file for suse-package-manager
-- name: package collection
-  package_facts:
-    manager: auto
+#- name: package collection
+ # package_facts:
+  #  manager: auto
 
-- name: Install package
+- name: Install {{ package }}
   include_tasks: install.yml
   when: 
     - role_function == "install"
 
-- name: uninstall package
+- name: uninstall {{ package }}
   include_tasks: remove.yml
   when: 
     - role_function == "remove"
 
-- name: check package
-  include_tasks: install.yml
+- name: check {{ package }}
+  include_tasks: check.yml
   when: 
     - role_function == "check"
