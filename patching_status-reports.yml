@@ -12,13 +12,13 @@
         # For Windows:
         #Get-HotFix | Select-Object -Property HotFixID
 
-      register: patching_data
+      register: patching_status_data
 
     - name: Generate patching status report
       set_fact:
-        patch_report: "{{ patching_data.stdout_lines }}"
+        patching_status_report: "{{ patching_status_data.stdout_lines }}"
 
     - name: Display patching status report
       debug:
-        var: patch_report
+        var: patching_status_report
 
