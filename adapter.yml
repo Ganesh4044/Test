@@ -1,0 +1,118 @@
+- hosts: localhost
+  #become: yes
+  gather_facts: yes
+  
+  vars:
+  
+    #random settings
+    csv_path: /tmp
+    csv_filename: adapter-data.csv
+    headers: primary_adapter, primary_adapter_status, primary_adpater_state, primary_dns, secondary_dns, ip_address, subnetMask, gateway, mac_address, dhcp_status, secondary_adapter, secondary_adapter_status, secondary_adapter_state, More Than2Interfaces
+
+  tasks:
+  
+    - name: get facts
+      setup:
+      register: facts
+      
+    - name: Get first adapter status
+      shell:
+        cmd: ip link show  
+      register: first_adapter_status
+      
+    - name: Get first_adapter_state
+      shell:
+        cmd: nmcli device status | grep {{ ansible_interfaces[0] }} | awk '{print $3}'
+      register: first_adapter_state
+    
+    - name: Get second dapter status
+      shell:
+        cmd: cat /sys/calss/net/{{ ansible_interfaces[1] }}/operstate
+      register: second_adapter_status
+      
+    - name: Get second_adapter_state
+      shell:
+        cmd: nmcli device status | grep {{ ansible_interfaces[1] }} | awk '{print $3}'
+      register: second_adapter_state
+    
+    - name: Get DHCP status
+      shell: 
+        cmd: systemctl status dhcpd | grep Active | awk '{print $2}'
+      register: dhcp_status
+    
+    - name: Get Interface length
+      set_fact:
+        interface_total: "{{ ansible_facts.interfaces | length }"
+    
+    - name: Check if more than two interfaces
+      set_fact:
+        morethan_two_interfaces: "True"
+      when: interface_total > "2"
+    
+    - name: check if less than or equal to 2
+      set_fact:
+        morethan_two_interfaces: "False"
+      when: interface_total <= "2"
+    
+    - name: set facts for the variables
+      set_fact:
+    
+        primary_dns: "{{ ansible_dns.nameservers [0] }}"
+        secondary_dns: "{{ ansible_dns.nameservers [1] }}" 
+        ip_address: "{{ ansible_default_ipv4.address }}"
+        subnetMask: "{{ (ansible_default_ipv4.network + '/' + ansible_default_ipv4.netmask) | ipaddr('network/prefix') }}"
+        gateway: "{{ ansible_default_ipv4.gateway }}"
+        mac_address: "{{ ansible_default_ipv4.macaddress }}"
+        first_adapter: "{{ ansible_interfaces [0]}}" 
+        second_adapter: "{{ ansible_interfaces[1]}}"
+
+
+    - name: show output
+      debug:
+        msg: "{{ item }}"
+      with_items:
+        - "first_adapter: {{ first_adapter }}"
+        - "first_adapter_status: {{ first_adapter_status.stdout }}" 
+        - "first_adapter_state: {{ first_adapter_state.stdout }}"
+        - "primarydns: {{ primary_dns }}"
+        - "secondarydns: {{ secondary_dns }}"
+        - "ip_address: {{ ip_address}}"
+        - "subnet Mask: (( subnetMask }}"
+        - "gateway : {{ gateway }}"
+        - "macaddress: {{ mac_address }}" 
+        - "second_adapter: {{ second_adapter }}"
+        - "second_adapter_status: {{ second_adapter_status.stdout }}"
+        - "second_adapter_state: {{ second_adapter_state.stdout }}"
+        - "dhcp_status: {{ dhcp_status.stdout }}"
+        - "morethan 2 interface: {{ morethan_two_interfaces }}"
+        
+
+    - name: Gather last Postfix Status
+      shell:
+        systemctl status postfix | egrep -i Active | awk '{print $2,$3}'
+      register: active
+      
+    - name: Save CSV headers
+      ansible.builtin.lineinfile:
+        dest: "{{ csv_path }}/{{ csv_filename }}"
+        line: "{{ headers }}"
+        create: true
+        state: present
+      delegate_to: localhost
+      run_once: true
+      #with_items: "{{ ansible_interfaces }}"
+    
+    - name: Build out CSV file
+      ansible.builtin.lineinfile:
+        dest: "{{ csv_path}}/{{ csv_filename }}"
+        line: "{{ first_adapter }},{{first_adapter_status.stdout }},{{first_adapter_state.stdout}},{{primary_dns}},{{secondary_dns}},{{ip_address}},{{subnetMask}},{{gateway}},{{mac_address}},{{dhcp_status.stdout}},{{second_adapter}},{{second_adapter_status.stdout}},{{second_adapter_state.stdout}},{{morethan_two_interfaces}}"
+        create: true
+        state: present
+      delegate_to: localhost
+
+    - name: Read in CSV to variable 
+      community.general.read_csv:
+        path: "{{ csv_path}}/{{ csv_filename }}"
+      register: csv_file
+      delegate_to: localhost
+      run_once: true

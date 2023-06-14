@@ -1,0 +1,14 @@
+---
+- name: Check Adapter Status
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: Gather network interface facts
+      network_interface_facts:
+
+    - name: Display adapter status
+      debug:
+        msg: "Interface {{ item.key }} is {{ item.value.state }}"
+      loop: "{{ ansible_facts.network_interfaces | dict2items }}"
+
