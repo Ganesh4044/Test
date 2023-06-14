@@ -1,5 +1,5 @@
 # playbook for diskspace-utilization-remediation
 ---
-- hosts: linux
+- hosts: localhost
   roles:
     - { role: roles/diskspace-utilization-remediation, become: yes }

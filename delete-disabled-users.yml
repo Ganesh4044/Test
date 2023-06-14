@@ -1,0 +1,17 @@
+---
+- name: Delete Disabled Users
+  hosts: localhost
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Find disabled users
+      command: awk -F: "($7 != "/usr/sbin/nologin" && $7 != "/bin/false" && $7 != "/bin/nologin" && $7 != "/sbin/nologin" && $7 != "/usr/bin/nologin") {print $1} /etc/passwd"
+      register: disabled_users
+
+    - name: Delete disabled users
+      user:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ disabled_users.stdout_lines }}"
+

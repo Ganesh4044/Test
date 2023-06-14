@@ -1,0 +1,24 @@
+---
+- name: Patching Status Report
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: Collect patching data
+      shell: |
+        # Command to collect patching data (customize based on your system)
+        # For Linux:
+        apt list --installed | grep -v Listing | awk '{ print $1 }'
+        # For Windows:
+        #Get-HotFix | Select-Object -Property HotFixID
+
+      register: patching_data
+
+    - name: Generate patching status report
+      set_fact:
+        patch_report: "{{ patching_data.stdout_lines }}"
+
+    - name: Display patching status report
+      debug:
+        var: patch_report
+
