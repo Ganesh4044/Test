@@ -1,0 +1,25 @@
+---
+- name: Multiple Tasks in Block
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Multiple Tasks Block
+      block:
+        - name: Task 
+          debug:
+            msg: "Running Task 1"
+
+        - name: Task 2
+          debug:
+            msg: "Running Task 2"
+
+        - name: Task 3
+          debug:
+            msg: "Running Task 3"
+
+      rescue:
+        - name: Rescue Task
+          debug:
+            msg: "One of the tasks failed, executing rescue task"
+

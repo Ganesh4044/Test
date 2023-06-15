@@ -1,0 +1,59 @@
+- name: Get Adapter Name
+  set_fact:
+    adapter: "{{ item }}"
+
+- name: adapter_state
+  shell:
+    cmd: nmcli device status | grep "{{ item }}" | awk '{print $3}'
+  register: adapter_state
+
+- name: Get DHCP status
+  shell:
+    cmd: systemctl status dhcpd | grep Active | awk '{print $2}'
+  register: dhcp_status
+
+- name: Get Interface length
+  set_fact:
+    interface_total: "{{ ansible_facts.interfaces | length }}"
+
+- name: Check if more than two interfaces
+  set_fact:
+    morethan_two_interfaces: "True"
+  when: interface_total > "2"
+
+- name: check if less than or equal to 2
+  set_fact:
+    morethan_two_interfaces: "False"
+  when: interface_total <= "2"
+
+- name: set facts for the variables
+  set_fact:
+
+    dns_servers: "{{ ansible_dns.nameservers }}"
+    ip_address: "{{ ansible_default_ipv4.address }}"
+    subnetMask: "{{ (ansible_default_ipv4.network + '/' + ansible_default_ipv4.netmask) | ipaddr('network/prefix') }}"
+    gateway: "{{ ansible_default_ipv4.gateway }}"
+    mac_address: "{{ ansible_default_ipv4.macaddress }}"
+
+- name: Gather last Postfix Status
+  shell:
+    systemctl status postfix | egrep -i Active | awk '{print $2,$3}'
+  register: active
+
+- name: Save CSV headers
+  ansible.builtin.lineinfile:
+    dest: "{{ csv_path }}/{{ csv_filename }}"
+    line: "{{ headers }}"
+    create: true
+    state: present
+  delegate_to: localhost
+  run_once: true
+  #with_items: "{{ ansible_interfaces }}"
+
+- name: Build out CSV file
+  ansible.builtin.lineinfile:
+    dest: "{{ csv_path}}/{{ csv_filename }}"
+    line: "{{morethan_two_interfaces}},{{ adapter }},{{adapter_state.stdout}},{{dns_servers}},{{ip_address}},{{subnetMask}},{{gateway}},{{mac_address}},{{dhcp_status.stdout}}"
+    create: true
+    state: present
+  delegate_to: localhost

@@ -1,0 +1,33 @@
+- hosts: localhost
+  #become: yes
+  gather_facts: yes
+
+  vars:
+
+    #random settings
+    csv_path: /tmp
+    csv_filename: adapter-data.csv
+    headers: More_Than2Interfaces, adapter, adpater_state, DNS-Servers, ip_address, subnetMask, gateway, mac_address, dhcp_status
+
+  tasks:
+
+    - name: get facts
+      setup:
+      register: facts
+
+        #- name: Get first adapter status
+        #shell:
+        #cmd: ip link show
+        #register: first_adapter_status
+    - name: run tasks for each interface
+      include_tasks: "tasksAdapter.yml"
+      with_items: "{{ ansible_interfaces }}"
+      run_once: false
+    
+    - name: Read in CSV to variable
+      community.general.read_csv:
+        path: "{{ csv_path}}/{{ csv_filename }}"
+      register: csv_file
+      delegate_to: localhost
+      run_once: true
+      #with_item: "{{ ansible_interfaces}}"
