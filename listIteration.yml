@@ -1,0 +1,20 @@
+---
+- name: List Iteration Example
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    #my_list:
+    # - item1
+    # - item2
+    # - item
+
+  tasks:
+    - name: get facts
+      setup:
+      register: facts
+
+    - name: Display list items
+      debug:
+        msg: "Processing item: {{ item }}"
+      loop: "{{ ansible_interfaces }}"
