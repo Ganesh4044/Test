@@ -1,0 +1,18 @@
+---
+- name: Check Files in Nexus Repository
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Check File Presence in Nexus
+    uri:
+      url: "{{ http://localhost:8081}}/repository/{{reports}}/report/cp.yml"
+      method: HEAD
+    register: file_status
+    ignore_errors: true
+
+  - name: Display File Status
+    debug:
+      msg: "File exists in Nexus: {{ nexus_url }}/repository/{{ nexus_repository }}/path/to/file"
+    when: file_status.status == 200
+
+

@@ -1,0 +1,19 @@
+---
+# tasks file for report-role
+- name: Save CSV headers
+  ansible.builtin.lineinfile:
+    dest: "{{ csv_path }}/{{ csv_filename }}"
+    line: "{{ headers }}"
+    create: true
+    state: present
+  delegate_to: localhost
+  run_once: true
+#with_items: "{{ ansible_interfaces }}"
+
+- name: Build out CSV file
+  ansible.builtin.lineinfile:
+    dest: "{{ csv_path}}/{{ csv_filename }}"
+    line: "{{morethan_two_interfaces}},{{ adapter }},{{adapter_state.stdout}},{{dns_servers}},{{ip_address}},{{subnetMask}},{{gateway}},{{mac_address}},{{dhcp_status.stdout}}"
+    create: true
+    state: present
+  delegate_to: localhost

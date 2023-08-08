@@ -1,0 +1,32 @@
+- name: Upload artifact to Nexus
+  hosts: localhost
+  gather_facts: false
+  vars:
+    nexus_url: "http://localhost:8081/repository/reports/"
+    nexus_username: "admin"
+    nexus_password: "68ca3a1a-2a76-409e-b9a7-7c6b9adcf329"
+    repository_name: "report"
+    artifact_path: "/home/ganesh/Test/nexus.yml"
+    artifact_name: "nexus.yml"
+
+  tasks:
+    - name: Read artifact file
+      slurp:
+        path: "{{ artifact_path }}"
+      register: artifact_content
+
+    - name: Upload artifact to Nexus
+      uri:
+        url: "{{ nexus_url }}/repository/{{ repository_name }}/{{ artifact_name }}"
+        method: PUT
+        user: "{{ nexus_username }}"
+        password: "{{ nexus_password }}"
+        body: "{{ artifact_content['content'] | b64decode }}"
+        return_content: yes
+        status_code: 201
+      register: upload_result
+
+    - name: Print upload result
+      debug:
+        var: upload_result
+

@@ -15,10 +15,6 @@
       setup:
       register: facts
 
-        #- name: Get first adapter status
-        #shell:
-        #cmd: ip link show
-        #register: first_adapter_status
     - name: run tasks for each interface
       include_tasks: "tasksAdapter.yml"
       with_items: "{{ ansible_interfaces }}"

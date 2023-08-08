@@ -1,0 +1,10 @@
+---
+# tasks file for get-DNS-facts-linux
+- name: get facts
+  setup:
+  register: facts
+
+- name: run tasks for each interface
+  include_tasks: "tasksAdapter.yml"
+  with_items: "{{ ansible_interfaces }}"
+  run_once: false

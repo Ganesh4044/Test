@@ -1,0 +1,14 @@
+- hosts: localhost
+  #become: yes
+  gather_facts: yes
+
+  vars:
+
+    #random settings
+    csv_path: /tmp
+    csv_filename: adapter-data.csv
+    headers: More_Than2Interfaces, adapter, adpater_state, DNS-Servers, ip_address, subnetMask, gateway, mac_address, dhcp_status
+
+  roles:
+    - role: roles/get-DNS-facts-linux
+    - role: roles/report-role
