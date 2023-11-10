@@ -1,0 +1,19 @@
+---
+- name: Check and Take Action on High CPU Utilization
+  hosts: localhost
+  gather_facts: True
+
+  tasks:
+    - name: Get CPU Utilization
+      shell: "sar -u 1 3 | grep 'Average' | awk '{print $NF}'"
+      register: cpu_utilization
+
+    - name: Check CPU Utilization
+      fail:
+        msg: "CPU utilization is above 85%."
+      when: cpu_utilization.stdout_lines[0] | float > 85
+
+    - name: Display CPU Utilization report
+      debug:
+        var: cpu_utilization.stdout_lines
+

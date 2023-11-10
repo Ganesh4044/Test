@@ -1,0 +1,14 @@
+---
+- name: Check Memory Utilization
+  hosts: localhost
+  gather_facts: True
+
+  tasks:
+    - name: Get Memory Utilization
+      shell: "free -m | grep Mem | awk '{print $3/$2 * 100}'"
+      register: memory_utilization
+
+    - name: Display Memory Utilization report
+      debug:
+        var: memory_utilization.stdout_lines
+
