@@ -1,0 +1,41 @@
+---
+- name: Kill Top 5 Processes
+  hosts: localhost
+    #become: true  # Run tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Identify Top 5 Processes
+      shell: "ps aux --sort=-%cpu | awk 'NR<=6 {print $11, $2}'"
+      register: top_processes
+      changed_when: false
+
+    - name: Display Top 5 Processes
+      debug:
+        var: top_processes.stdout_lines
+
+    - name: Kill Top 5 Processes
+      shell: "kill -9 {{ item.split(' ')[1] }}"
+      with_items: "{{ top_processes.stdout_lines[1:] }}"
+      when: "'{{ item.split(' ')[0] }}' != 'COMMAND'"  # Skip the header line in ps output
+
+    - name: Display Remaining Processes
+      shell: ps aux
+      register: remaining_processes
+      changed_when: false
+
+    - name: Display Memory Usage After Killing Processes
+      shell: free -m
+      register: memory_usage_after
+      changed_when: false
+
+    - name: Display Memory Usage Difference
+      debug:
+        var: memory_usage_after.stdout_lines
+      when: memory_usage_after.stdout_lines != memory_usage_before.stdout_lines
+
+  handlers:
+    - name: Display Memory Usage Before Execution
+      shell: free -m
+      register: memory_usage_before
+      changed_when: false
+

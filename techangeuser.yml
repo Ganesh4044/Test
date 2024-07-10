@@ -1,0 +1,28 @@
+---
+- name: Check Memory Utilization
+  hosts: localhost
+  gather_facts: True
+  become: yes
+  become_method: sudo
+  become_user: sample
+    #become_pass: sample44
+    
+  tasks:
+
+    #- name: check user
+    #  become: yes
+    # become_user: root
+    #    #password: sample44
+    #  become_method: sudo
+    #  become_flags: '--login'
+    #  shell: whoami
+    
+    - name: Get Memory Utilization
+      shell: "whoami" 
+        #"free -m | grep Mem | awk '{print $3/$2 * 100}'"
+      register: memory_utilization
+
+    - name: Display Memory Utilization report
+      debug:
+        var: memory_utilization.stdout_lines
+

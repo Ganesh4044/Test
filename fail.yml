@@ -1,0 +1,9 @@
+---
+- name: Example Task that Fails
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: This task will intentionally fail
+      fail:
+        msg: "This is a deliberate failure message"
